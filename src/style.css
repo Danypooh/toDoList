@@ -75,3 +75,29 @@ header {
   align-self: center;
   justify-self: center;
 }
+
+/* Projects */
+main {
+  margin: 40px;
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  border: 2px solid var(--main-color);
+  border-radius: 15px;
+}
+
+.space3 {
+  border-left: 2px solid var(--secondary-color);
+  border-right: 2px solid var(--secondary-color);
+}
+
+.content {
+  border: 2px solid var(--main-color);
+}

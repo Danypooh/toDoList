@@ -1,13 +1,21 @@
+import project from "./project";
+
 const toDo = (function() {
   
-  class ToDo {
-    constructor(title, description, dueDate, priority) {
-      this.title = title;
+  class ToDo extends project.Project {
+    constructor(title, dueDate, priority, project, description) {
+      super(title, dueDate, priority);
+      this.project = project;
       this.description = description;
-      this.dueDate = dueDate;
-      this.priority = priority;
     }
   }
-
   
+  function createToDo(title, dueDate, priority, project, description) {
+    const toDo = new ToDo(title, dueDate, priority, project, description)
+    return toDo;
+  }
+
+  return createToDo;
 })()
+
+export default toDo;
