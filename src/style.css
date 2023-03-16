@@ -1,0 +1,77 @@
+/* General */
+html {
+  box-sizing: border-box;
+}
+
+/* @font-face {
+  font-family: 'bauer-bodoni';
+  src: url('./fonts/bauer-bodoni.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+} */
+  
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+  margin: 0;
+  /* font-family: 'bauer-bodoni'; */
+}
+  
+:root {
+  --main-color: #a9792b;;
+  --secondary-color: #68d6f7;
+  font-size: calc(0.625rem + 0.4vw);
+}
+
+#content {
+
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+#header {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr;
+  column-gap: 40px;
+  row-gap: 20px;
+  width: 400px;
+  justify-self: center;
+}
+
+#today-date {
+  padding: 15px;
+  border-bottom: 2px solid var(--main-color);
+  grid-column: 1 / 3;
+  grid-row: 1;
+}
+
+#menu {
+  grid-column: 3 / 4;
+  grid-row: 1;
+}
+
+#current-space {
+  justify-self: end;
+  grid-column: 1 / 2;
+  grid-row: 2;
+}
+
+#add-btn {
+  grid-column: 2 / 3;
+  grid-row: 2;
+}
+
+#today-date,
+#menu,
+#add-btn {
+  align-self: center;
+  justify-self: center;
+}
