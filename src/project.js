@@ -1,34 +1,88 @@
-const project = (function() {
-  
-    class Project {
-      constructor(title, dueDate, priority) {
-        this.title = title;
-        this.dueDate = dueDate;
-        this.priority = priority;
-      }
+const projects = (function() {
 
-      get(property) {
-        return this[property];
-      }
-    
-      set(property, value) {
-        this[property] = value;
-      }
-    }
-  
-    const createProject = (title, dueDate, priority) => {
-      const project = new Project(title, dueDate, priority)
-      return project;
-    }
+  const projectArr = []; //Array to store all project Objects with their markup
 
-    function createProjectTemplate(createProject) {
+  class Project {
+    constructor(title, dueDate, priority) {
+      this.title = title;
+      this.dueDate = dueDate;
+      this.priority = priority;
+    }
       
+    get(property) {
+      return this[property];
     }
   
-    return {
-      Project,
-      createProject
-    };
-  })()
+    set(property, value) {
+      this[property] = value;
+    }
+  }  
+
+  const createProject = (title, dueDate, priority) => {
+    const project = new Project(title, dueDate, priority)
+    return project;
+  }
   
-  export default project;
+  function createProjectMarkup(project) {
+    const projectMarkup = `
+      <div class="project">
+      <div class="project-header">
+        <div class="space1">
+          <input type="color" value="#ffffff" class="project-priority"/>
+        </div>
+        <div class="space2">
+          <input type="text" class="project-title" name="name" required minlength="1" maxlength="15" placeholder="Project"/>
+        </div>
+        <div class="space3">
+          <input type="date" class="project-date" required/>
+        </div>
+        <div class="space4">
+          <button class="material-symbols-outlined">
+            more_vert
+          </button>
+        </div>
+      </div>
+      <div class="project-content">
+        <div class="project-toDo">
+          To Do
+          <ul>
+            <li>project</li>
+            <li>project</li>
+            <li>project</li>
+          </ul>
+        </div>
+        <div class="project-done">
+          Done
+          <ul>
+            <li>project</li>
+            <li>project</li>
+            <li>project</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    `;
+    return projectMarkup;
+  }
+
+  function addProjectToArray(project, projectMarkup) {
+    projectArr.push([project, projectMarkup]);
+  }
+  
+  function addProject(title, dueDate, priority) {
+    const newProject = createProject(title, dueDate, priority);
+    const projectMarkup = createProjectMarkup(newProject);
+    addProjectToArray(newProject, projectMarkup);
+    const main = document.querySelector('main');
+    main.innerHTML= '';
+    projectArr.forEach(project => main.insertAdjacentHTML("beforeend", project[1]))
+  }
+
+  return {
+    Project,
+    addProject
+  };
+
+})()
+  
+  export default projects;

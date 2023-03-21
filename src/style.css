@@ -21,6 +21,7 @@ html {
 :root {
   --main-color: #a9792b;;
   --secondary-color: #68d6f7;
+  --third-color: #e3ebf08f;
   font-size: calc(0.625rem + 0.4vw);
 }
 
@@ -47,7 +48,7 @@ header {
 }
 
 #today-date {
-  padding: 15px;
+  padding: 15px 0;
   border-bottom: 2px solid var(--main-color);
   grid-column: 3 / 4;
   grid-row: 1;
@@ -80,6 +81,10 @@ header {
 /* Projects */
 main {
   margin: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .project {
@@ -87,7 +92,8 @@ main {
   flex-direction: column;
   border: 2px solid var(--main-color);
   border-radius: 20px;
-  min-width: 200px;
+  width: max(300px, 90vw);
+  margin-top: 1rem;
 }
 
 .project-header {
@@ -95,7 +101,35 @@ main {
   align-items: center;
   border: 3px solid var(--main-color);
   border-radius: 15px;
-  padding: 10px;
+  padding: 0 0.5rem;
+}
+
+.project-priority {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  margin: 0;
+  height: 30px;
+  width: 30px;
+}
+
+.project-priority::-webkit-color-swatch {
+  border-radius: 20px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent; 
+  border-left:10px solid rgb(0, 0, 0);
+  border-right: none;
+}
+
+.project-title {
+  width: min(25vw, 100px);
+  border: none;
+}
+
+.project-date {
+  border: none;
 }
 
 .space2 {
@@ -105,13 +139,29 @@ main {
 .space1,
 .space3,
 .space4 {
-  margin-right: 2rem;
+  margin-right: 0.5rem;
 }
 
 .space3 {
-  padding: 0 1rem;
-  border-left: 2px solid var(--secondary-color);
-  border-right: 2px solid var(--secondary-color);
+  padding: 0 0.5rem;
+  border-left: 2px solid var(--third-color);
+  border-right: 2px solid var(--third-color);
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 48;
+  color: var(--main-color);
+  border: none;
+  background: none;
+}
+
+.material-symbols-outlined:hover {
+  background-color: var(--third-color);
+  border-radius: 50px;
 }
 
 .project-content {
