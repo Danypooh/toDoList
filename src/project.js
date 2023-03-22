@@ -75,12 +75,28 @@ const projects = (function() {
     addProjectToArray(newProject, projectMarkup);
     const main = document.querySelector('main');
     main.innerHTML= '';
-    projectArr.forEach(project => main.insertAdjacentHTML("beforeend", project[1]))
+    projectArr.forEach(project => main.insertAdjacentHTML("beforeend", project[1]));
+  }
+
+  function editProject(e) {
+    console.log(e.target);
+  }
+
+  function enterProyectSettings()  {
+    if (projectArr.length) {
+      const proyectSettingsBtn = document.getElementsByClassName("material-symbols-outlined");
+      Array.from(proyectSettingsBtn).forEach(project => project.addEventListener("click", (e) => {
+      editProject(e);
+      }));
+    } else {
+      console.log("projectArr is empty")
+    }
   }
 
   return {
     Project,
-    addProject
+    addProject,
+    enterProyectSettings
   };
 
 })()
