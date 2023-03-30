@@ -23,7 +23,7 @@ const projects = (function() {
     return project;
   }
   
-  function createProjectMarkup(project) {
+  function createProjectMarkup() {
     const projectMarkup = `
       <div class="project">
       <div class="project-header">
@@ -61,6 +61,10 @@ const projects = (function() {
         </div>
       </div>
     </div>
+    <div id="accept-cancel-box">
+        <button id="accept-btn">Accept</button>
+        <button id="cancel-btn">Cancel</button>
+    </div>
     `;
     return projectMarkup;
   }
@@ -75,7 +79,7 @@ const projects = (function() {
     addProjectToArray(newProject, projectMarkup);
     const main = document.querySelector('main');
     main.innerHTML= '';
-    projectArr.forEach(project => main.insertAdjacentHTML("beforeend", project[1]));
+    projectArr.forEach(project => main.insertAdjacentHTML("afterbegin", project[1]));
   }
 
   function editProject(e) {
@@ -93,10 +97,16 @@ const projects = (function() {
     }
   }
 
+  function configProject() {
+    // document.querySelector(".project-priority").click();
+    document.querySelector(".project-title").focus();  // selects the project at the top (the newly created project)
+  }
+
   return {
     Project,
     addProject,
-    enterProyectSettings
+    enterProyectSettings,
+    configProject
   };
 
 })()

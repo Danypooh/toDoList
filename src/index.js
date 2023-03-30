@@ -2,7 +2,22 @@ import "./style.css";
 import projects from "./project";
 
 const addBtn = document.getElementById("add-btn");
-addBtn.addEventListener("click", () => {
-  projects.addProject("Omazing Project", "13/03/2023", "high"); //ATENTION, not setting values
-  projects.enterProyectSettings();
-})
+const currentSpace = document.getElementById("current-space");
+switch (currentSpace.value) {
+  case "Home": addBtn.addEventListener("click", () => {
+                 projects.addProject();  
+                 projects.configProject();
+                 projects.enterProyectSettings();
+               })
+               break;
+  case "Today": 
+               break;
+  case "Week": 
+               break;
+  case "Projects": 
+               break;
+  case "Notes": 
+               break;
+  default: console.log("default case")
+           break;
+}

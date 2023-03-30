@@ -22,6 +22,8 @@ html {
   --main-color: #a9792b;;
   --secondary-color: #68d6f7;
   --third-color: #e3ebf08f;
+  --green-color: #3ba395;
+  --red-color: #ff8686;
   font-size: calc(0.625rem + 0.4vw);
 }
 
@@ -180,4 +182,45 @@ main {
   border-top: 1px solid var(--main-color);
   margin: 0.5rem;
   padding: 0.5rem;
+}
+
+#accept-cancel-box {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  width: max(280px, 60vw); 
+}
+
+#accept-btn,
+#cancel-btn {
+  width: 5.5rem;
+  height: 1.8rem;
+  border-radius: 15px;
+  cursor: pointer;
+  background-color: white;
+  border: 1px solid;
+  margin: 1rem;
+}
+
+#accept-btn {
+  color: var(--green-color);
+  
+}
+
+#cancel-btn {
+  color: var(--red-color);
+}
+
+#accept-btn:focus,
+#cancel-btn:focus {
+  color: white;
+  font-weight: bold;
+}
+
+#accept-btn:focus {
+  background-color: var(--green-color);
+}
+
+#cancel-btn:focus {
+  background-color: var(--red-color);
 }
