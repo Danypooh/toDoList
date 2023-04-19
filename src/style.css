@@ -89,7 +89,8 @@ main {
   align-items: center;
 }
 
-.project {
+.project,
+.toDo {
   display: flex;
   flex-direction: column;
   border: 2px solid var(--main-color);
@@ -98,7 +99,8 @@ main {
   margin-top: 1rem;
 }
 
-.project-header {
+.project-header,
+.toDo-header {
   display: flex;
   align-items: center;
   border: 3px solid var(--main-color);
@@ -106,7 +108,8 @@ main {
   padding: 0 0.5rem;
 }
 
-.project-priority {
+.project-priority,
+.toDo-priority {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -117,7 +120,8 @@ main {
   width: 30px;
 }
 
-.project-priority::-webkit-color-swatch {
+.project-priority::-webkit-color-swatch,
+.toDo-priority::-webkit-color-swatch {
   border-radius: 20px;
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent; 
@@ -125,12 +129,15 @@ main {
   border-right: none;
 }
 
-.project-title {
+.project-title,
+.toDo-title,
+.toDo-project {
   width: min(25vw, 100px);
   border: none;
 }
 
-.project-date {
+.project-date,
+.toDo-date {
   border: none;
 }
 
@@ -166,7 +173,8 @@ main {
   border-radius: 50px;
 }
 
-.project-content {
+.project-content,
+.toDo-content {
   padding: 1rem;
   display: flex;
   justify-content: space-between;
