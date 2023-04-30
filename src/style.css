@@ -232,3 +232,31 @@ main {
 #cancel-btn:focus {
   background-color: var(--red-color);
 }
+
+#editMenu {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  border: 1px solid;
+  border-radius: 15px;
+  width: min-content;
+  align-self: end;
+  margin: 0.3rem;
+  position: relative;
+}
+
+#edit,
+#delete {
+  width: 4.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+  background-color: white;
+  border: none;
+  border-radius: 15px;
+  margin: 0.3rem;
+}
+
+#edit:hover,
+#delete:hover {
+  background-color: var(--third-color);
+}
