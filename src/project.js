@@ -80,27 +80,24 @@ const projects = (function() {
     const main = document.querySelector("main");
     main.insertAdjacentHTML("afterbegin", createProjectMarkup());
   }
+
+  function checkValidation(varToValidate, condition, fieldToValidate) {
+    if (varToValidate !== condition) {
+      console.log(`${fieldToValidate} validated`);
+      return true;
+    } 
+    console.warn(`please select  ${fieldToValidate}`);
+    return false;
+  }
   
-  function projectValidation(projectTitle, projectDate, projectPriority) {
+  function projectValidation(projectTitleValue, projectDateValue, projectPriorityValue) {
     let validation = 0;
-    if (projectPriority !== "#ffffff") {
-      console.log("priority validated");
+    if (checkValidation(projectPriorityValue, "#ffffff", "project priority"))
       validation += 1;
-      if (projectTitle !== "") {
-        console.log("title validated");
-        validation += 1;
-        if (projectDate !== "") {
-          console.log("date validated");
-          validation += 1;
-        } else {
-          console.warn("please select a date");
-        }
-      } else {
-        console.warn("please select a title");
-      }
-    } else {
-      console.warn("please select a priority");
-    }
+    if (checkValidation(projectTitleValue, "", "project Title"))
+      validation += 1;
+    if (checkValidation(projectDateValue, "", "project Date"))
+      validation += 1;
     return validation;
   }
 
@@ -110,15 +107,23 @@ const projects = (function() {
     main.removeChild(acceptDeclineBtns);
   }
 
-  const addAcceptCancelBtns = () => {
+  const createAcceptCancelBtns = () => {
     const accpetCancelBox = `
       <div id="accept-cancel-box">
         <button id="accept-btn">Accept</button>
         <button id="cancel-btn">Cancel</button>
       </div>
     `;
-    const currentProject = document.querySelector(".project");
-    currentProject.insertAdjacentHTML("afterend", accpetCancelBox);
+    return accpetCancelBox;
+  }
+
+  const addAcceptCancelBtns = (currentProject) => {    
+    currentProject.insertAdjacentHTML("afterend", createAcceptCancelBtns());
+  }
+
+  const enableDisableFields = function(value, ...fields) {
+    for (let i=0; i<fields.length; i ++)
+      fields[i].disabled = value;
   }
 
   const disableInputFields = () => {
@@ -126,19 +131,18 @@ const projects = (function() {
     const projectTitle = document.querySelector(".project-title");
     const projectDate = document.querySelector(".project-date");
     
-    projectPriority.disabled = true;
-    projectTitle.disabled = true;
-    projectDate.disabled = true;
+    enableDisableFields(true, projectPriority, projectTitle, projectDate);
   }
 
-  const enableInputFields = () => {
-    const projectPriority = document.querySelector(".project-priority");
-    const projectTitle = document.querySelector(".project-title");
-    const projectDate = document.querySelector(".project-date");
+  const enableInputFields = (currentProject) => {
+    const currentProjectChildren = currentProject.children;
+    const currentProjectChildrenArr = Array.from(currentProjectChildren);
 
-    projectPriority.disabled = false;
-    projectTitle.disabled = false;
-    projectDate.disabled = false;
+    const projectPriority = currentProjectChildrenArr[0].firstElementChild;
+    const projectTitle = currentProjectChildrenArr[1].firstElementChild;
+    const projectDate = currentProjectChildrenArr[2].firstElementChild;
+
+    enableDisableFields(false, projectPriority, projectTitle, projectDate);
   }
 
   function acceptEdit() {
@@ -173,33 +177,45 @@ const projects = (function() {
     }
   }
 
-  function updateProjectsRenderization() {
-    const main = document.querySelector('main');
-    projectArr.forEach(project => main.insertAdjacentHTML("afterbegin", project[1]));
-  }
+  // function updateProjectsRenderization() {
+  //   const main = document.querySelector('main');
+  //   projectArr.forEach(project => main.insertAdjacentHTML("afterbegin", project[1]));
+  // }
 
-  function editProyect() {
-    enableInputFields();
-    addAcceptCancelBtns();
+  function editProyect(e) {
+    enableInputFields(e.target.parentNode.previousElementSibling);
+    if (document.getElementById("accept-cancel-box")) {
+      return;
+    }
+    addAcceptCancelBtns(e.target.closest(".project"));
     addListenerToAcceptCancelSettingsBtns();
   }
 
-  function addListenerToSettingsBtns (edit, deletee) {
-    edit.addEventListener("click", editProyect);
-    deletee.addEventListener("click", deleteProyectPopup);
+  function addListenerToSettingsBtns () {
+    const edit = document.getElementById("edit");
+    edit.addEventListener("click", (e) => {
+      editProyect(e);
+    });
+    const deletee = document.getElementById("delete");
+    deletee.addEventListener("click", (e) => {
+      deleteProyectPopup(e);
+    });
   }
 
-  function openEditMenu(e) {
-    console.log(e.target);
-
+  const createEditMenu = () => {
     const editMenu = `
     <div id="editMenu">
       <button id="edit">Edit</button>
       <button id="delete">Delete</button>
     </div>
     `;
+    return editMenu;
+  }
+  
+  function openEditMenu(e) {
+    const editMenu = createEditMenu();
 
-    const header = document.querySelector(".project-header");
+    const projectHeader = e.target.parentElement.closest(".project-header");
 
     if (e.target.classList.contains('active')) {
       e.target.classList.remove('active');
@@ -207,25 +223,17 @@ const projects = (function() {
       insertedContent.parentNode.removeChild(insertedContent);
     } else {
       e.target.classList.add('active');
-      header.insertAdjacentHTML("afterend", editMenu);
-      const edit = document.getElementById("edit");
-      const deletee = document.getElementById("delete");
-      addListenerToSettingsBtns(edit, deletee);
+      projectHeader.insertAdjacentHTML("afterend", editMenu);
+      addListenerToSettingsBtns();
     }
-   
-    // const projectPriority = document.querySelector(".project-priority");
-    // const projectTitle = document.querySelector(".project-title");
-    // const projectDate = document.querySelector(".project-date");
-
-    // enableInputFields(projectPriority, projectTitle, projectDate);
   }
 
   function addListenerToProyectSettings()  {
     if (projectArr.length) {
-      const proyectSettingsBtn = document.getElementsByClassName("material-symbols-outlined");
-      Array.from(proyectSettingsBtn).forEach(project => project.addEventListener("click", (e) => {
-      openEditMenu(e);
-      }));
+      const proyectSettingsBtn = document.querySelector(".material-symbols-outlined");
+      proyectSettingsBtn.addEventListener("click", (e) => {
+        openEditMenu(e);
+      });
     } else {
       console.log("projectArr is empty")
     }
