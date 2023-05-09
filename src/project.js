@@ -130,25 +130,40 @@ const projects = (function() {
     const projectPriority = document.querySelector(".project-priority");
     const projectTitle = document.querySelector(".project-title");
     const projectDate = document.querySelector(".project-date");
-    
     enableDisableFields(true, projectPriority, projectTitle, projectDate);
   }
 
-  const enableInputFields = (currentProject) => {
-    const currentProjectChildren = currentProject.children;
-    const currentProjectChildrenArr = Array.from(currentProjectChildren);
-
+  const enableInputFields = (currentProjectChildrenArr) => {
     const projectPriority = currentProjectChildrenArr[0].firstElementChild;
     const projectTitle = currentProjectChildrenArr[1].firstElementChild;
     const projectDate = currentProjectChildrenArr[2].firstElementChild;
-
     enableDisableFields(false, projectPriority, projectTitle, projectDate);
   }
 
-  function acceptEdit() {
-    console.log("project edited");
+  const getIndexOfEditedProject = (projectTitleValue) => {
+    const currentProjectTitleValue = (element) => element[0].title === projectTitleValue;
+    const currentProjectIndex = projectArr.findIndex(currentProjectTitleValue);
+    return currentProjectIndex;
+  }
+
+  const updateProjectValues = (projectObject, currentProjectChildrenArr) => {
+    const projectPriorityValue = currentProjectChildrenArr[0].firstElementChild.value;
+    const projectTitleValue = currentProjectChildrenArr[1].firstElementChild.value;
+    const projectDateValue = currentProjectChildrenArr[2].firstElementChild.value;
+
+    projectObject.priority = projectPriorityValue;
+    projectObject.title = projectTitleValue;
+    projectObject.dueDate = projectDateValue;
+  }
+
+  function acceptEdit(currentProjectChildrenArr, projectOriginalTitle) {
+    const index = getIndexOfEditedProject(projectOriginalTitle);
+    const projectObj = projectArr[index][0];
+    updateProjectValues(projectObj, currentProjectChildrenArr);
     removeAcceptCancelBtns();
     disableInputFields();
+    console.log("project edited");
+    console.log(projectArr[index][0]);
   }
 
   function cancelEdit() {
@@ -156,9 +171,9 @@ const projects = (function() {
     disableInputFields();
   }
 
-  function addListenerToAcceptCancelSettingsBtns() {
+  function addListenerToAcceptCancelSettingsBtns(currentProjectChildrenArr, projectOriginalTitle) {
     const acceptBtn = document.getElementById("accept-btn");
-    acceptBtn.addEventListener("click", acceptEdit);
+    acceptBtn.addEventListener("click", () => {acceptEdit(currentProjectChildrenArr, projectOriginalTitle)});
     const cancelBtn = document.getElementById("cancel-btn");
     cancelBtn.addEventListener("click", cancelEdit);
   }
@@ -183,23 +198,24 @@ const projects = (function() {
   // }
 
   function editProyect(e) {
-    enableInputFields(e.target.parentNode.previousElementSibling);
-    if (document.getElementById("accept-cancel-box")) {
-      return;
+    if (checkForSingleProjectCreation()) {
+      return console.warn("cannot edit a project while creating another");
     }
-    addAcceptCancelBtns(e.target.closest(".project"));
-    addListenerToAcceptCancelSettingsBtns();
+    const currentProjectHeader = e.target.parentNode.previousElementSibling;
+    const currentProjectChildren = currentProjectHeader.children;
+    const currentProjectChildrenArr = Array.from(currentProjectChildren);
+    const projectOriginalTitle = currentProjectChildrenArr[1].firstElementChild.value;
+    enableInputFields(currentProjectChildrenArr);
+    const currentProject = e.target.closest(".project");
+    addAcceptCancelBtns(currentProject);
+    addListenerToAcceptCancelSettingsBtns(currentProjectChildrenArr, projectOriginalTitle);
   }
 
   function addListenerToSettingsBtns () {
     const edit = document.getElementById("edit");
-    edit.addEventListener("click", (e) => {
-      editProyect(e);
-    });
+    edit.addEventListener("click", (e) => {editProyect(e);});
     const deletee = document.getElementById("delete");
-    deletee.addEventListener("click", (e) => {
-      deleteProyectPopup(e);
-    });
+    deletee.addEventListener("click", (e) => {deleteProyectPopup(e);});
   }
 
   const createEditMenu = () => {
@@ -214,15 +230,15 @@ const projects = (function() {
   
   function openEditMenu(e) {
     const editMenu = createEditMenu();
-
     const projectHeader = e.target.parentElement.closest(".project-header");
+    const project = e.target.parentElement.closest(".project");
 
-    if (e.target.classList.contains('active')) {
-      e.target.classList.remove('active');
+    if (project.classList.contains('active')) {
+      project.classList.remove('active');
       const insertedContent = document.getElementById("editMenu");
       insertedContent.parentNode.removeChild(insertedContent);
     } else {
-      e.target.classList.add('active');
+      project.classList.add('active');
       projectHeader.insertAdjacentHTML("afterend", editMenu);
       addListenerToSettingsBtns();
     }
@@ -231,9 +247,7 @@ const projects = (function() {
   function addListenerToProyectSettings()  {
     if (projectArr.length) {
       const proyectSettingsBtn = document.querySelector(".material-symbols-outlined");
-      proyectSettingsBtn.addEventListener("click", (e) => {
-        openEditMenu(e);
-      });
+      proyectSettingsBtn.addEventListener("click", (e) => {openEditMenu(e);});
     } else {
       console.log("projectArr is empty")
     }

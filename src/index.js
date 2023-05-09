@@ -1,6 +1,11 @@
 import "./style.css";
 import projects from "./project";
 import toDos from "./toDo";
+const {format} = require('date-fns');
+
+const date = document.getElementById("today-date");
+const today = format(new Date(),'dd.MM.yyyy');
+date.innerHTML = `Today: ${today}`;
 
 const addBtn = document.getElementById("add-btn");
 const currentSpace = document.getElementById("current-space");
