@@ -81,6 +81,20 @@ const projects = (function() {
     main.insertAdjacentHTML("afterbegin", createProjectMarkup());
   }
 
+  function checkForSingleProjectCreation() {
+    if (document.getElementById("accept-cancel-box")) {
+      return true;
+    }
+    return false;
+  }
+
+  function checkForSingleProjectEdition() {
+    if (document.getElementById("editMenu")) {
+      return true;
+    }
+    return false;
+  }
+
   function checkValidation(varToValidate, condition, fieldToValidate) {
     if (varToValidate !== condition) {
       console.log(`${fieldToValidate} validated`);
@@ -102,9 +116,11 @@ const projects = (function() {
   }
 
   const removeAcceptCancelBtns = () => {
-    const acceptDeclineBtns = document.getElementById("accept-cancel-box");
-    const main = document.querySelector("main");
-    main.removeChild(acceptDeclineBtns);
+    if (checkForSingleProjectCreation()) {
+      const acceptDeclineBtns = document.getElementById("accept-cancel-box");
+      const main = document.querySelector("main");
+      main.removeChild(acceptDeclineBtns);
+    }
   }
 
   const createAcceptCancelBtns = () => {
@@ -146,7 +162,7 @@ const projects = (function() {
     return currentProjectIndex;
   }
 
-  const updateProjectValues = (projectObject, currentProjectChildrenArr) => {
+  const updateProjectArrayValues = (projectObject, currentProjectChildrenArr) => {
     const projectPriorityValue = currentProjectChildrenArr[0].firstElementChild.value;
     const projectTitleValue = currentProjectChildrenArr[1].firstElementChild.value;
     const projectDateValue = currentProjectChildrenArr[2].firstElementChild.value;
@@ -156,34 +172,42 @@ const projects = (function() {
     projectObject.dueDate = projectDateValue;
   }
 
-  function acceptEdit(currentProjectChildrenArr, projectOriginalTitle) {
-    const index = getIndexOfEditedProject(projectOriginalTitle);
-    const projectObj = projectArr[index][0];
-    updateProjectValues(projectObj, currentProjectChildrenArr);
-    removeAcceptCancelBtns();
-    disableInputFields();
-    console.log("project edited");
-    console.log(projectArr[index][0]);
+  const returnProjectValues = (projectObject, currentProjectChildrenArr) => {
+    const projectPriority = currentProjectChildrenArr[0].firstElementChild;
+    const projectTitle = currentProjectChildrenArr[1].firstElementChild;
+    const projectDate = currentProjectChildrenArr[2].firstElementChild;
+
+    projectPriority.value = projectObject.priority;
+    projectTitle.value = projectObject.title;
+    projectDate.value = projectObject.dueDate;
   }
 
-  function cancelEdit() {
+  function acceptEdit(currentProjectChildrenArr, projectIndex) {
+    const projectObject = projectArr[projectIndex][0];
+    updateProjectArrayValues(projectObject, currentProjectChildrenArr);
     removeAcceptCancelBtns();
     disableInputFields();
   }
 
-  function addListenerToAcceptCancelSettingsBtns(currentProjectChildrenArr, projectOriginalTitle) {
+  function cancelEdit(currentProjectChildrenArr, projectIndex) {
+    const projectObject = projectArr[projectIndex][0];
+    returnProjectValues(projectObject, currentProjectChildrenArr)
+    removeAcceptCancelBtns();
+    disableInputFields();
+  }
+
+  function addListenerToAcceptCancelSettingsBtns(currentProjectChildrenArr, projectIndex) {
     const acceptBtn = document.getElementById("accept-btn");
-    acceptBtn.addEventListener("click", () => {acceptEdit(currentProjectChildrenArr, projectOriginalTitle)});
+    acceptBtn.addEventListener("click", () => {acceptEdit(currentProjectChildrenArr, projectIndex)});
     const cancelBtn = document.getElementById("cancel-btn");
-    cancelBtn.addEventListener("click", cancelEdit);
+    cancelBtn.addEventListener("click", () => {cancelEdit(currentProjectChildrenArr, projectIndex)});
   }
 
   const removeProject = () => {
     const project = document.querySelector(".project");
     const main = document.querySelector("main");
     main.removeChild(project);
-    if (document.getElementById("accept-cancel-box"))
-      removeAcceptCancelBtns();
+    removeAcceptCancelBtns();
   }
 
   function deleteProyectPopup() {
@@ -204,11 +228,13 @@ const projects = (function() {
     const currentProjectHeader = e.target.parentNode.previousElementSibling;
     const currentProjectChildren = currentProjectHeader.children;
     const currentProjectChildrenArr = Array.from(currentProjectChildren);
-    const projectOriginalTitle = currentProjectChildrenArr[1].firstElementChild.value;
-    enableInputFields(currentProjectChildrenArr);
+
     const currentProject = e.target.closest(".project");
     addAcceptCancelBtns(currentProject);
-    addListenerToAcceptCancelSettingsBtns(currentProjectChildrenArr, projectOriginalTitle);
+    const projectOriginalTitle = currentProjectChildrenArr[1].firstElementChild.value;
+    const projectIndex = getIndexOfEditedProject(projectOriginalTitle);
+    addListenerToAcceptCancelSettingsBtns(currentProjectChildrenArr, projectIndex);
+    enableInputFields(currentProjectChildrenArr);
   }
 
   function addListenerToSettingsBtns () {
@@ -229,16 +255,21 @@ const projects = (function() {
   }
   
   function openEditMenu(e) {
-    const editMenu = createEditMenu();
-    const projectHeader = e.target.parentElement.closest(".project-header");
     const project = e.target.parentElement.closest(".project");
 
     if (project.classList.contains('active')) {
       project.classList.remove('active');
       const insertedContent = document.getElementById("editMenu");
       insertedContent.parentNode.removeChild(insertedContent);
+      removeAcceptCancelBtns();
+
     } else {
+      if (checkForSingleProjectEdition()) {
+        return console.warn("cannot edit two projects at the same time");
+      }
       project.classList.add('active');
+      const editMenu = createEditMenu();
+      const projectHeader = e.target.parentElement.closest(".project-header");
       projectHeader.insertAdjacentHTML("afterend", editMenu);
       addListenerToSettingsBtns();
     }
@@ -281,13 +312,6 @@ const projects = (function() {
     acceptBtn.addEventListener("click", acceptProject);
     const cancelBtn = document.getElementById("cancel-btn");
     cancelBtn.addEventListener("click", removeProject);
-  }
-
-  function checkForSingleProjectCreation() {
-    if (document.getElementById("accept-cancel-box")) {
-      return true;
-    }
-      return false;
   }
 
   function initProject() {
