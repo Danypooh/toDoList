@@ -212,8 +212,8 @@ const projects = (function() {
   // }
 
   function editProyect(e) {
-    if (checkForSingleProjectElementId("editMenu")) {
-      return console.warn("cannot edit a project while creating another");
+    if (checkForSingleProjectElementId("accept-cancel-box")) {
+      return console.warn("cannot edit the same project twice");
     }
     const currentProjectHeader = e.target.parentNode.previousElementSibling;
     const currentProjectChildren = currentProjectHeader.children;
@@ -245,6 +245,9 @@ const projects = (function() {
   }
   
   function openEditMenu(e) {
+    if (checkForSingleProjectElementId("accept-cancel-box")) {
+      return console.warn("cannot edit a project while creating another");
+    }
     const project = e.target.parentElement.closest(".project");
     if (project.classList.contains('active')) {
       project.classList.remove('active');
@@ -305,6 +308,9 @@ const projects = (function() {
   function initProject() {
     if (checkForSingleProjectElementId("accept-cancel-box")) {
       return console.warn("cannot create two projects at the same time");
+    }
+    if (checkForSingleProjectElementId("editMenu")) {
+      return console.warn("cannot edit and create a project at the same time");
     }
     renderProject();
     addListenerToAcceptCancelProyectBtns();
