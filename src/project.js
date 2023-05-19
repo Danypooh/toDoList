@@ -81,15 +81,8 @@ const projects = (function() {
     main.insertAdjacentHTML("afterbegin", createProjectMarkup());
   }
 
-  function checkForSingleProjectCreation() {
-    if (document.getElementById("accept-cancel-box")) {
-      return true;
-    }
-    return false;
-  }
-
-  function checkForSingleProjectEdition() {
-    if (document.getElementById("editMenu")) {
+  function checkForSingleProjectElementId(id) {
+    if (document.getElementById(id)) {
       return true;
     }
     return false;
@@ -116,7 +109,7 @@ const projects = (function() {
   }
 
   const removeAcceptCancelBtns = () => {
-    if (checkForSingleProjectCreation()) {
+    if (checkForSingleProjectElementId("accept-cancel-box")) {
       const acceptDeclineBtns = document.getElementById("accept-cancel-box");
       const main = document.querySelector("main");
       main.removeChild(acceptDeclineBtns);
@@ -182,25 +175,22 @@ const projects = (function() {
     projectDate.value = projectObject.dueDate;
   }
 
-  function acceptEdit(currentProjectChildrenArr, projectIndex) {
+  function acceptCancelEdit(action, currentProjectChildrenArr, projectIndex) {
     const projectObject = projectArr[projectIndex][0];
-    updateProjectArrayValues(projectObject, currentProjectChildrenArr);
-    removeAcceptCancelBtns();
-    disableInputFields();
-  }
-
-  function cancelEdit(currentProjectChildrenArr, projectIndex) {
-    const projectObject = projectArr[projectIndex][0];
-    returnProjectValues(projectObject, currentProjectChildrenArr)
+    if (action === "accept") {
+      updateProjectArrayValues(projectObject, currentProjectChildrenArr);
+    } else if (action === "cancel") {
+      returnProjectValues(projectObject, currentProjectChildrenArr)
+    }
     removeAcceptCancelBtns();
     disableInputFields();
   }
 
   function addListenerToAcceptCancelSettingsBtns(currentProjectChildrenArr, projectIndex) {
     const acceptBtn = document.getElementById("accept-btn");
-    acceptBtn.addEventListener("click", () => {acceptEdit(currentProjectChildrenArr, projectIndex)});
+    acceptBtn.addEventListener("click", () => {acceptCancelEdit("accept", currentProjectChildrenArr, projectIndex)});
     const cancelBtn = document.getElementById("cancel-btn");
-    cancelBtn.addEventListener("click", () => {cancelEdit(currentProjectChildrenArr, projectIndex)});
+    cancelBtn.addEventListener("click", () => {acceptCancelEdit("cancel", currentProjectChildrenArr, projectIndex)});
   }
 
   const removeProject = () => {
@@ -222,7 +212,7 @@ const projects = (function() {
   // }
 
   function editProyect(e) {
-    if (checkForSingleProjectCreation()) {
+    if (checkForSingleProjectElementId("editMenu")) {
       return console.warn("cannot edit a project while creating another");
     }
     const currentProjectHeader = e.target.parentNode.previousElementSibling;
@@ -256,15 +246,13 @@ const projects = (function() {
   
   function openEditMenu(e) {
     const project = e.target.parentElement.closest(".project");
-
     if (project.classList.contains('active')) {
       project.classList.remove('active');
       const insertedContent = document.getElementById("editMenu");
       insertedContent.parentNode.removeChild(insertedContent);
       removeAcceptCancelBtns();
-
     } else {
-      if (checkForSingleProjectEdition()) {
+      if (checkForSingleProjectElementId("editMenu")) {
         return console.warn("cannot edit two projects at the same time");
       }
       project.classList.add('active');
@@ -315,7 +303,7 @@ const projects = (function() {
   }
 
   function initProject() {
-    if (checkForSingleProjectCreation()) {
+    if (checkForSingleProjectElementId("accept-cancel-box")) {
       return console.warn("cannot create two projects at the same time");
     }
     renderProject();
