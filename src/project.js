@@ -193,16 +193,16 @@ const projects = (function() {
     cancelBtn.addEventListener("click", () => {acceptCancelEdit("cancel", currentProjectChildrenArr, projectIndex)});
   }
 
-  const removeProject = () => {
-    const project = document.querySelector(".project");
+  const removeProject = (project) => {
     const main = document.querySelector("main");
     main.removeChild(project);
     removeAcceptCancelBtns();
   }
 
-  function deleteProyectPopup() {
+  function deleteProyectPopup(e) {
     if (window.confirm("delete project?")) {
-      removeProject();
+      const project = e.target.parentElement.closest(".project");
+      removeProject(project);
     }
   }
 
