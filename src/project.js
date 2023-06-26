@@ -302,7 +302,8 @@ const projects = (function() {
     const acceptBtn = document.getElementById("accept-btn");
     acceptBtn.addEventListener("click", acceptProject);
     const cancelBtn = document.getElementById("cancel-btn");
-    cancelBtn.addEventListener("click", removeProject);
+    const project = document.querySelector(".project")
+    cancelBtn.addEventListener("click", () =>  {removeProject(project)});
   }
 
   function initProject() {
